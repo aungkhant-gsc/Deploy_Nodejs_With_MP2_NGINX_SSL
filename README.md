@@ -37,7 +37,7 @@ ctrl+C
 ## 6. Setup PM2 process manager to keep your app running
 ```
 sudo npm i pm2 -g
-pm2 start app (or whatever your file name)
+pm2 start app.js (or whatever your file name)
 
 # Other pm2 commands
 pm2 show app
@@ -48,7 +48,32 @@ pm2 logs (Show log stream)
 pm2 flush (Clear logs)
 
 # To make sure app starts when reboot
-pm2 startup ubuntu
+pm2 startup systemd
+
+It will output something like below
+
+Output
+[PM2] Init System found: systemd
+sammy
+[PM2] To setup the Startup Script, copy/paste the following command:
+sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u sammy --hp /home/sammy
+
+# Run the command from the output, with your username in place of ubuntu
+
+sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u sammy --hp /home/ubuntu
+
+#As an additional step, we can save the PM2 process list and corresponding environments
+
+pm2 save
+
+#Start the service with systemctl:
+
+sudo systemctl start pm2-ubuntu
+
+#Check the status of the systemd unit:
+
+systemctl status pm2-ubuntu
+
 ```
 ### You should now be able to access your app using your IP and port. Now we want to setup a firewall blocking that port and setup NGINX as a reverse proxy so we can access it directly using port 80 (http)
 
